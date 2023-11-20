@@ -1,0 +1,55 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.5'
+	id 'io.spring.dependency-management' version '1.1.3'
+	id 'com.github.johnrengelman.shadow' version '7.0.0'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2022.0.4")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
+	implementation 'com.amazonaws:aws-lambda-java-events:3.8.0'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('bootBuildImage') {
+	builder = 'paketobuildpacks/builder-jammy-base:latest'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+tasks.register("buildZip", Zip) {
+	from compileJava
+	from processResources
+	into('lib') {
+		exclude 'org.apache.tomcat.embed:*'
+		from configurations.runtimeClasspath
+	}
+}
+
+
+tasks.buildZip.dependsOn tasks.build
