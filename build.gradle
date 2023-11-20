@@ -22,8 +22,12 @@ ext {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.cloud:spring-cloud-function-web'
 	implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
 	implementation 'com.amazonaws:aws-lambda-java-events:3.8.0'
+	implementation 'software.amazon.awssdk:sns'
+	implementation platform('software.amazon.awssdk:bom:2.15.0')
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
